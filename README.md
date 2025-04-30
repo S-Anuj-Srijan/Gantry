@@ -29,10 +29,12 @@ This project is a computer vision–enabled test tube archiving system, combinin
        python archivingcam.py
    ```
 ## 🖥️ Frontend (GUI) Setup
-1. From the root of the project, start the Docker container:
+1. In gui/Gantry/src/socket.ts add the server url which uvicorn shows
+   
+3. From the root of the project, start the Docker container:
   ``` bash
     docker compose up
 ```
-2. The frontend will be available at:
+3. The frontend will be available at:
    localhost:5173
 
