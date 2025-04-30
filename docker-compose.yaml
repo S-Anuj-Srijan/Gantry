@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build: ./gui/Gantry
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./gui/Gantry/src:/app/src
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    tty: true

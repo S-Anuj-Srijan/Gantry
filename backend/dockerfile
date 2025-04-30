@@ -1,0 +1,17 @@
+# backend/Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the backend code (folders used for imports should be within the backend directory)
+COPY . .
+
+# Expose the backend port (adjust as needed)
+EXPOSE 8000
+
+# Run the backend application (adjust the command to your entrypoint)
+CMD ["python", "archivalmulti.py"]
