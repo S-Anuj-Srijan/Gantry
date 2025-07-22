@@ -2,20 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Root font and color settings */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Inter, system-ui, Avenir, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
 }
 
 a {
@@ -59,15 +57,39 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light mode overrides */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* =============================== */
+/* Dark mode support for AG Grid */
+/* =============================== */
+html.dark .ag-root-wrapper,
+html.dark .ag-theme-quartz {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html.dark .ag-cell,
+html.dark .ag-header-cell,
+html.dark .ag-row {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Optional: fix scroll bar or grid overflow issues */
+html.dark .ag-body-viewport {
+  scrollbar-color: #64748b #0f172a;
 }

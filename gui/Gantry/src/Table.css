@@ -1,8 +1,44 @@
-.blue1
-{
-    background-color: #90e0ef;
+/* table.css */
+
+/* Override default AG Grid themes if necessary */
+.ag-theme-quartz {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.875rem; /* Tailwind's text-sm */
+  color: #000000;
 }
-.blue2
-{
-    background-color: #48cae4;
+
+/* Dark mode overrides */
+.dark .ag-theme-quartz {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+/* Row color classes */
+.even\:bg-cyan-100 {
+  background-color: #cfeffd !important;
+}
+
+.odd\:bg-cyan-200 {
+  background-color: #b6e9f7 !important;
+}
+
+.dark .even\:bg-slate-800 {
+  background-color: #1e293b !important;
+}
+
+.dark .odd\:bg-slate-700 {
+  background-color: #334155 !important;
+}
+
+/* Text color */
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+.dark .text-gray-100 {
+  color: #f3f4f6;
 }

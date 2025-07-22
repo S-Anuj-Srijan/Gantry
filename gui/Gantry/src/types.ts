@@ -1,8 +1,9 @@
-interface Navprops
-{
-    progress  : number
-    command : ()=> void ;
-    buttondis : boolean
+export interface NavProps {
+  progress: number;
+  command: () => void;
+  buttondis: boolean;
+  darkMode: boolean;
+  setDarkMode: (val: boolean) => void;
 }
 interface Cellprops
 {
