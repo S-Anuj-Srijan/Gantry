@@ -265,7 +265,7 @@ void grip(int grip)
   //Serial.print(grip);
   if(grip==1)
   {
-    gripper.write(45);
+    gripper.write(20);
   }
   else if(grip==0)
   {
