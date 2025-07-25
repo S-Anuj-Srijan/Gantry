@@ -28,14 +28,14 @@ void initGantry()
   Serial.begin(115200);
   //Serial.print(Serial.availableForWrite());
   //Serial.println("done");
-  stepperX.setMaxSpeed(3000); 
-  stepperX.setAcceleration(6000);
+  stepperX.setMaxSpeed(300); 
+  stepperX.setAcceleration(600);
   stepperX.setSpeed(0);
-  stepperY.setMaxSpeed(20000);
-  stepperY.setAcceleration(8000);
+  stepperY.setMaxSpeed(2000);
+  stepperY.setAcceleration(800);
   stepperY.setSpeed(0);
-  stepperZ.setMaxSpeed(20000);
-  stepperZ.setAcceleration(8000);
+  stepperZ.setMaxSpeed(2000);
+  stepperZ.setAcceleration(800);
   stepperZ.setSpeed(0);
   gripper.attach(GRIPPER);
   rotator.attach(ROTATOR);
@@ -256,7 +256,7 @@ void homeZ()
 void rotate(int degrees)
 {
  // Serial.println(degrees);
-  rotator.write(degrees+55);
+  rotator.write(degrees);
   delay(50);
   Serial.print("r");
 }

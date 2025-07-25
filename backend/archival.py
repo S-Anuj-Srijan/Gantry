@@ -8,6 +8,8 @@ from datetime import datetime
 import uvicorn
 import asyncio
 
+x_const=6
+y_const= -9
 sio = socketio.AsyncServer(
     async_mode="asgi",
     cors_allowed_origins=["http://localhost:5173"],  # Allowed origins
@@ -28,7 +30,8 @@ def archive_process(queue):
         device = port.device
         print(port)
         desc = port.description.lower()
-        if "arduino" in desc:
+        print(desc)
+        if "ch340" in desc:
             print(f"{device} is the Arduino Mega.")
             robot = rb.Robot('gantry', device)
 
@@ -75,8 +78,8 @@ def archive_process(queue):
         return datetime.now().strftime('%H:%M:%S')
 
 
-    source = [([122,143,166,186,208,229,250,271,293,315,336,357],28),([120,142,164,184,207,228,248,270,290,313,334,356],129),([121,142,163,185,206,227,249,270,291,313,335,356],223)]#([121,142,163],317)]
-    dest = [([420,443,465,486,507,528,549,570,591,612,633,654],28),([423,444,465,487,509,529,549,570,591,613,634,655],126),([418,441,462,483,505,527,548,569,591,612,633,655],221)]
+    source = [([81+x_const,102+x_const,123+x_const,144+x_const,165+x_const,186+x_const,207+x_const,228+x_const,249+x_const,270+x_const,291+x_const,312+x_const],20+y_const),([84+x_const,105+x_const,126+x_const,147+x_const,168+x_const,189+x_const,210+x_const,231+x_const,252+x_const,273+x_const,294+x_const,315+x_const],41+y_const),([84+x_const,105+x_const,126+x_const,147+x_const,168+x_const,189+x_const,210+x_const,231+x_const,252+x_const,273+x_const,294+x_const,315+x_const],215+y_const)]#([121,142,163],317)]
+    dest = [([108+x_const,429+x_const,450+x_const,471+x_const,492+x_const,513+x_const,534+x_const,555+x_const,576+x_const,597+x_const,618+x_const,639+x_const],220+y_const),([108+x_const,429+x_const,450+x_const,471+x_const,492+x_const,513+x_const,534+x_const,555+x_const,576+x_const,597+x_const,618+x_const,639+x_const],120+y_const),([402+x_const,423+x_const,444+x_const,465+x_const,486+x_const,507+x_const,528+x_const,549+x_const,570+x_const,591+x_const,612+x_const,633+x_const],21+y_const)]
     tt_filled = [48,48,0]
 # Create a Socket.IO server with CORS configuration
 
@@ -99,7 +102,7 @@ def archive_process(queue):
             for k in range(0, 4 if j >= 4 else j):
                 xs = source[i][0][prow]
                 ys = source[i][1] + 21 * k
-                zs = 165
+                zs = 160
                 t1 = robot_pick((xs, ys, zs), i, prow, k)
                 t2 = ''
                 robot.move_to(xs, 10, 45, gripper_state=1, rHead=49)
@@ -124,7 +127,7 @@ def archive_process(queue):
                 if ret:
                     xd = dest[l][0][row]
                     yd = dest[l][1] + 21 * col
-                    zd = 165
+                    zd = 160
                     t2 = robot_place((xd, yd, zd), l, row, k, barcode)
                     queue.put(['data', {'tt_id': barcode, 'pick': t1, 'place': t2,
                                                   'source': f's{i} {chr(65 + k)} {prow}',
