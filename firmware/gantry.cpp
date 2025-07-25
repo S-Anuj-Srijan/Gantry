@@ -256,7 +256,7 @@ void homeZ()
 void rotate(int degrees)
 {
  // Serial.println(degrees);
-  rotator.write(degrees);
+  rotator.write(degrees+55);
   delay(50);
   Serial.print("r");
 }
@@ -265,11 +265,11 @@ void grip(int grip)
   //Serial.print(grip);
   if(grip==1)
   {
-    gripper.write(117);
+    gripper.write(45);
   }
   else if(grip==0)
   {
-    gripper.write(20);
+    gripper.write(0);
   }
   else
   {
