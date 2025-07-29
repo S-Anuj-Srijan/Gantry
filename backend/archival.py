@@ -8,8 +8,6 @@ from datetime import datetime
 import uvicorn
 import asyncio
 
-x_const=6
-y_const= -9
 sio = socketio.AsyncServer(
     async_mode="asgi",
     cors_allowed_origins=["http://localhost:5173"],  # Allowed origins
@@ -44,9 +42,21 @@ def archive_process(queue):
     y_offset=3
     height_offset=1
     rhead = 50
-    max_height=45
+    max_height=15
     lisdf = pd.DataFrame(columns=['Tt-id','Pick','Place','Source','Dest'])
     print(robot)
+    # Read calibration values from file and assign to variables
+    try:
+        with open("calibration.txt", "r") as file:
+            x_str, y_str = file.readline().strip().split(",")
+            x_const = int(x_str)
+            y_const = int(y_str)
+            print(f"Loaded calibration: x_const={x_const}, y_const={y_const}")
+    except FileNotFoundError:
+        x_const = 4
+        y_const = -3
+        print("Calibration file not found. Using default x_const=4, y_const=-3")
+
     def robot_pick(pose,rack,row,slot):	 
         pose = [int(num) for num in pose]
         print("Robot Pose:",pose)
@@ -105,7 +115,7 @@ def archive_process(queue):
                 zs = 160
                 t1 = robot_pick((xs, ys, zs), i, prow, k)
                 t2 = ''
-                robot.move_to(xs, 10, 45, gripper_state=1, rHead=49)
+                robot.move_to(xs, 0, 15, gripper_state=1, rHead=49)
                 print("Reading barcode")
                 ret, barcode = 0, 0
                 start_time = time.time()
@@ -116,7 +126,7 @@ def archive_process(queue):
 
                 xc, yc, zc, rc, gr = robot.get_pose()
                 rc = 49
-                while not ret and time.time() - start_time <= 10:
+                while not ret and time.time() - start_time <= 20:
                     robot.move_to(xc, yc, zc, rHead=rc, gripper_state=1)
                     rc = rc + 30
                     time.sleep(0.1)
@@ -175,6 +185,10 @@ async def chat_message(sid, data):
     print(f"Received message: {data} from {sid}")
     await sio.emit("message", {"data": f"Echo: {data}"}, to=sid)
 
+
+
+        
+
 @sio.event
 async def robotCmd(sid, data):
     if data['cmd'] == 'home':
@@ -191,6 +205,56 @@ async def robotCmd(sid, data):
             await asyncio.sleep(0.1)
         archival_process.join()
         await sio.emit("rstatus", {"cmd": "completed"})
+
+    elif data['cmd'] == 'calibrate':
+        await sio.emit("rstatus", {"cmd": "calibrating"})
+        await sio.emit("rstatus",{"cmd":"doin"})
+        import socketio
+        from fastapi import FastAPI
+        import time
+        import robotInterfaces as rb
+        import serial.tools.list_ports
+
+        ports = serial.tools.list_ports.comports()
+        print(ports)
+        for port in ports:
+            device = port.device
+            print(port)
+            desc = port.description.lower()
+            print(desc)
+            if "ch340" in desc:
+                print(f"{device} is the Arduino Mega.")
+                robot1 = rb.Robot('gantry', device)
+            else:
+                print(f"{device} - {port.description}")
+        robot1.home()
+        cal_hieght=130
+        print("calibrate the thing")
+        print("is it fyn if not say xup or yup or ydown or xdown")
+        input_user_cal="false"
+        cal_const_x=0
+        cal_const_y=0
+        input_cal_const=""
+        robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+        while input_cal_const!="true":
+            robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+            input_cal_const=input("wasd for ws(x) ad(y)or true:")
+            if input_cal_const=="w":
+                cal_const_x+=1
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+            elif input_cal_const=="s":
+                cal_const_x-=1
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+            elif input_cal_const=="a":
+                cal_const_y+=1
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+            elif input_cal_const=="d":
+                cal_const_y-=1
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+        with open("calibration.txt", "w") as file:
+            file.write(f"{cal_const_x},{cal_const_y}\n")
+            print(f"Saved calibration: x={cal_const_x}, y={cal_const_y}")
+        await sio.emit("rstatus", {"cmd": "completed"})        
+        await sio.emit("rstatus", {"cmd": "calibrated"})
 if __name__ == "__main__":
     uvicorn.run(socket_app, host="127.0.0.1", port=8000)
-

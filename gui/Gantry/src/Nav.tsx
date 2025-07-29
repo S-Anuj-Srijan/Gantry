@@ -1,20 +1,8 @@
-import { useEffect, useState } from 'react';
 import { NavProps } from './types';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-export default function Nav({ command, progress, buttondis }: NavProps) {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Apply the dark mode class to <html> (Tailwind default root)
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
+export default function Nav({ command1, command2, progress, buttondis, darkMode, setDarkMode }: NavProps) {
   return (
     <div className="h-16 w-full flex items-center justify-between px-4 bg-cyan-200 dark:bg-cyan-900 shadow-md">
       {/* Title */}
@@ -37,15 +25,24 @@ export default function Nav({ command, progress, buttondis }: NavProps) {
 
         {/* Archive Button */}
         <button
-          onClick={command}
+          onClick={command1}
           disabled={buttondis}
           className={`px-4 py-2 rounded font-medium transition-all ${
-            buttondis
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-cyan-400 hover:bg-cyan-500 text-white'
+            buttondis ? 'bg-gray-400 cursor-not-allowed' : 'bg-cyan-400 hover:bg-cyan-500 text-white'
           }`}
         >
           Archive
+        </button>
+
+        {/* Calibrate Button */}
+        <button
+          onClick={command2}
+          disabled={buttondis}
+          className={`px-4 py-2 rounded font-medium transition-all ${
+            buttondis ? 'bg-gray-400 cursor-not-allowed' : 'bg-cyan-400 hover:bg-cyan-500 text-white'
+          }`}
+        >
+          Calibrate
         </button>
 
         {/* Dark Mode Toggle */}
