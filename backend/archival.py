@@ -60,12 +60,13 @@ def archive_process(queue):
     def robot_pick(pose,rack,row,slot):	 
         pose = [int(num) for num in pose]
         print("Robot Pose:",pose)
-
+        print(x_const)
+        print(y_const)
         x,y,z = pose
-        x = x + x_offset
-        y = y + y_offset
+        x = x + x_offset+x_const
+        y = y + y_offset+y_const
         z = z + height_offset
-        rHead = 49
+        rHead = 52
         robot.move_to(x,y,max_height,rHead,0)
         robot.move_to(x,y,z,rHead,0)
         robot.move_to(x,y,z,rHead,1)
@@ -76,9 +77,11 @@ def archive_process(queue):
 
     def robot_place(pose,rack,row,slot,barcode):	 
         x,y,z = pose
-        rHead = 49
-        x = x+x_offset
-        y=y +y_offset
+        rHead = 52
+        print(x_const)
+        print(y_const)
+        x = x+x_offset+x_const
+        y=y +y_offset+y_const
         robot.move_to(x,y,max_height,rHead,1)
         robot.move_to(x,y,max_height,rHead,1)
         robot.move_to(x,y,z,rHead,1)
@@ -88,8 +91,8 @@ def archive_process(queue):
         return datetime.now().strftime('%H:%M:%S')
 
 
-    source = [([81+x_const,102+x_const,123+x_const,144+x_const,165+x_const,186+x_const,207+x_const,228+x_const,249+x_const,270+x_const,291+x_const,312+x_const],20+y_const),([84+x_const,105+x_const,126+x_const,147+x_const,168+x_const,189+x_const,210+x_const,231+x_const,252+x_const,273+x_const,294+x_const,315+x_const],41+y_const),([84+x_const,105+x_const,126+x_const,147+x_const,168+x_const,189+x_const,210+x_const,231+x_const,252+x_const,273+x_const,294+x_const,315+x_const],215+y_const)]#([121,142,163],317)]
-    dest = [([108+x_const,429+x_const,450+x_const,471+x_const,492+x_const,513+x_const,534+x_const,555+x_const,576+x_const,597+x_const,618+x_const,639+x_const],220+y_const),([108+x_const,429+x_const,450+x_const,471+x_const,492+x_const,513+x_const,534+x_const,555+x_const,576+x_const,597+x_const,618+x_const,639+x_const],120+y_const),([402+x_const,423+x_const,444+x_const,465+x_const,486+x_const,507+x_const,528+x_const,549+x_const,570+x_const,591+x_const,612+x_const,633+x_const],21+y_const)]
+    source = [([81,102,123,144,165,186,207,228,249,270,291,312],20),([84,105,126,147,168,189,210,231,252,273,294,315],41),([84,105,126,147,168,189,210,231,252,273,294,315],215)]#([121,142,163],317)]
+    dest = [([108,429,450,471,492,513,534,555,576,597,618,639],220),([108,429,450,471,492,513,534,555,576,597,618,639],120),([402,423,444,465,486,507,528,549,570,591,612,633],21)]
     tt_filled = [48,48,0]
 # Create a Socket.IO server with CORS configuration
 
@@ -115,7 +118,7 @@ def archive_process(queue):
                 zs = 160
                 t1 = robot_pick((xs, ys, zs), i, prow, k)
                 t2 = ''
-                robot.move_to(xs, 0, 15, gripper_state=1, rHead=49)
+                robot.move_to(xs, 0, 15, gripper_state=1, rHead=52)
                 print("Reading barcode")
                 ret, barcode = 0, 0
                 start_time = time.time()
@@ -125,8 +128,10 @@ def archive_process(queue):
                     print(e)
 
                 xc, yc, zc, rc, gr = robot.get_pose()
-                rc = 49
+                rc = 52
                 while not ret and time.time() - start_time <= 20:
+                    robot.move_to(xc, yc, zc, rHead=rc, gripper_state=1)
+                    rc = rc + 30
                     robot.move_to(xc, yc, zc, rHead=rc, gripper_state=1)
                     rc = rc + 30
                     time.sleep(0.1)
@@ -235,22 +240,22 @@ async def robotCmd(sid, data):
         cal_const_x=0
         cal_const_y=0
         input_cal_const=""
-        robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+        robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
         while input_cal_const!="true":
-            robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+            robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
             input_cal_const=input("wasd for ws(x) ad(y)or true:")
             if input_cal_const=="w":
                 cal_const_x+=1
-                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
             elif input_cal_const=="s":
                 cal_const_x-=1
-                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
             elif input_cal_const=="a":
                 cal_const_y+=1
-                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
             elif input_cal_const=="d":
                 cal_const_y-=1
-                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,49,0)
+                robot1.move_to(81+cal_const_x,20+cal_const_y,cal_hieght,52,0)
         with open("calibration.txt", "w") as file:
             file.write(f"{cal_const_x},{cal_const_y}\n")
             print(f"Saved calibration: x={cal_const_x}, y={cal_const_y}")
